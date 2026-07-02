@@ -3,16 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor de Documentos Digitales</title>
-    <!-- Tailwind CSS para un diseño limpio y rápido -->
+    <title>GENUINO</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Carga de la librería PDF.js desde CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    
     <style>
         #pdf-render {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             max-width: 100%;
             height: auto;
+        }
+        .submenu {
+            display: flex;
+        }
+        .submenu.hidden {
+            display: none !important;
+        }
+        .arrow-icon {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        .arrow-icon.rotated {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -21,18 +35,55 @@
     <!-- MENÚ LATERAL DE ACCESOS -->
     <aside class="w-full md:w-64 bg-gray-800 p-6 flex flex-col gap-6 border-b md:border-b-0 md:border-r border-gray-700">
         <div>
-            <h2 class="text-xl font-bold text-blue-400 tracking-wide">Panel de Accesos</h2>
-            <p class="text-xs text-gray-400 mt-1">Selecciona un documento para visualizarlo</p>
+            <h2 class="text-xl font-bold text-blue-400 tracking-wide">Genuino</h2>
+            <p class="text-xs text-gray-400 mt-1">Selecciona una categoría y su documento</p>
         </div>
         
-        <!-- Botones del Menú (Modifica los 'data-pdf' con las rutas de tus archivos) -->
-        <nav class="flex flex-col gap-3">
-            <button data-pdf="documentos/pruebaLauraZelada.pdf" class="pdf-btn w-full text-left bg-gray-700 hover:bg-blue-600 px-4 py-3 rounded-lg font-medium transition-all duration-200 shadow-md">
-                📋 Libros Laura Zelada
-            </button>
-            <button data-pdf="documentos/catalogo-servicios.pdf" class="pdf-btn w-full text-left bg-gray-700 hover:bg-blue-600 px-4 py-3 rounded-lg font-medium transition-all duration-200 shadow-md">
-                🛠️ Galeria de Arte||Pintura
-            </button>
+        <!-- Contenedor de Categorías Desplegables -->
+        <nav class="flex flex-col gap-4">
+            
+            <!-- CATEGORÍA 1: Biblioteca -->
+            <div class="category-group flex flex-col">
+                <button type="button" class="category-toggle w-full flex justify-between items-center bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded-lg font-semibold transition shadow-md text-left">
+                    <span>📋 Biblioteca</span>
+                    <span class="arrow-icon text-xs">▼</span>
+                </button>
+                <div id="submenu-laura" class="submenu hidden flex flex-col gap-1.5 pl-4 mt-2 border-l-2 border-gray-600">
+                    
+                    <!-- Libro 1 (Predeterminado) -->
+                    <button id="btn-default-pdf" type="button" data-pdf="documentos/pruebaLauraZelada.pdf" data-date="2026-07-01" class="pdf-btn w-full text-left text-sm bg-gray-800 hover:bg-blue-600 px-3 py-2 rounded text-gray-300 hover:text-white transition flex items-center justify-between group">
+                        <span>📖 Libro 1</span>
+                    </button>
+                    
+                    <!-- Libro 2 -->
+                    <button type="button" data-pdf="documentos/lauraZelada-vol2.pdf" data-date="2026-06-15" class="pdf-btn w-full text-left text-sm bg-gray-800 hover:bg-blue-600 px-3 py-2 rounded text-gray-300 hover:text-white transition flex items-center justify-between group">
+                        <span>📖 Libro 2</span>
+                    </button>
+                    
+                </div>
+            </div>
+
+            <!-- CATEGORÍA 2: Galería de Arte -->
+            <div class="category-group flex flex-col">
+                <button type="button" class="category-toggle w-full flex justify-between items-center bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded-lg font-semibold transition shadow-md text-left">
+                    <span>🛠️ Galeria de Arte</span>
+                    <span class="arrow-icon text-xs">▼</span>
+                </button>
+                <div class="submenu hidden flex flex-col gap-1.5 pl-4 mt-2 border-l-2 border-gray-600">
+                    
+                    <!-- Ilustraciones -->
+                    <button type="button" data-pdf="documentos/catalogo-servicios.pdf" data-date="2026-06-30" class="pdf-btn w-full text-left text-sm bg-gray-800 hover:bg-blue-600 px-3 py-2 rounded text-gray-300 hover:text-white transition flex items-center justify-between group">
+                        <span>🎨 Ilustraciones</span>
+                    </button>
+                    
+                    <!-- Arte abstracta -->
+                    <button type="button" data-pdf="documentos/exposicion-junio.pdf" data-date="2026-05-20" class="pdf-btn w-full text-left text-sm bg-gray-800 hover:bg-blue-600 px-3 py-2 rounded text-gray-300 hover:text-white transition flex items-center justify-between group">
+                        <span>🖼️ Arte abstracta</span>
+                    </button>
+                    
+                </div>
+            </div>
+
         </nav>
 
         <!-- CONTROLES DEL VISOR -->
@@ -41,22 +92,53 @@
                 <span>Página: <span id="page-num" class="font-bold text-blue-400">0</span> / <span id="page-count">0</span></span>
             </div>
             <div class="flex gap-2">
-                <button id="prev-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">◀ Ant</button>
-                <button id="next-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">Sig ▶</button>
+                <button type="button" id="prev-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">◀ Ant</button>
+                <button type="button" id="next-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">Sig ▶</button>
             </div>
         </div>
     </aside>
 
     <!-- ÁREA DE VISUALIZACIÓN EN LÍNEA -->
-    <main class="flex-1 p-4 md:p-8 flex flex-col items-center justify-center bg-gray-950 overflow-y-auto">
-        <div id="welcome-message" class="text-center max-w-md p-6">
-            <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            <p class="text-lg text-gray-400 font-semibold">Bienvenido al visor interactivo</p>
-            <p class="text-sm text-gray-500 mt-2">Por favor, haz clic en cualquiera de los accesos del menú para cargar el PDF directamente en pantalla.</p>
+    <main class="flex-1 p-4 md:p-8 flex flex-col items-center justify-center bg-gray-950 overflow-y-auto relative">
+        
+        <!-- PANTALLA DE BIENVENIDA / INFORMACIÓN DE LA PÁGINA -->
+        <div id="welcome-message" class="w-full max-w-2xl bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-2xl text-center space-y-6">
+            
+            <!-- CONTENEDOR DE LA IMAGEN DESDE LA RAÍZ DEL PROYECTO -->
+            <div class="w-full h-48 md:h-64 rounded-xl overflow-hidden bg-gray-900 border border-gray-700 flex items-center justify-center relative">
+                <!-- Puedes cambiar 'img/portada.jpg' por la ruta de tu archivo de imagen local -->
+                <img src="img/portada.jpg" alt="Presentación Genuino" class="w-full h-full object-cover onerror-fallback">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent"></div>
+            </div>
+
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Genuino</h1>
+                <p class="text-blue-400 font-medium text-sm mt-1">La biblioteca en la nube</p>
+            </div>
+            
+            <hr class="border-gray-700">
+            
+            <!-- Bloque Informativo / Instrucciones -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">
+                    <h3 class="text-white font-bold text-sm flex items-center gap-2 mb-2">
+                        <span class="text-blue-400">⚡</span> Navegación Rápida
+                    </h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Despliega cualquier categoría del menú de la izquierda y selecciona un archivo para cargarlo de manera instantánea en pantalla sin recargar la página.</p>
+                </div>
+                <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">
+                    <h3 class="text-white font-bold text-sm flex items-center gap-2 mb-2">
+                        <span class="text-green-400">📱</span> Vista Optimizada
+                    </h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">El visor renderiza los documentos con alta nitidez adaptándose al tamaño de tu computadora, tablet o teléfono móvil de forma interactiva.</p>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-500 italic pt-2">Desplegando documento predeterminado... Por favor, selecciona cualquier otro archivo si deseas cambiar la vista.</p>
         </div>
 
         <!-- Canvas donde se dibuja el PDF -->
-        <div class="relative w-full max-w-4xl flex justify-center">
+        <div class="relative w-full max-w-4xl flex justify-center my-auto">
             <canvas id="pdf-render" class="hidden border border-gray-800 rounded-lg bg-white"></canvas>
         </div>
     </main>
