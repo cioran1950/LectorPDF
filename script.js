@@ -17,7 +17,7 @@
         const ctx = canvas ? canvas.getContext('2d') : null;
 
         // =========================================================================
-        // 1. VALIDACIÓN DE IMAGEN DE PORTADA (RESPALDO SI NO EXISTE LA RUTA)
+            // 1. VALIDACIÓN DE IMAGEN DE PORTADA (RESPALDO SI NO EXISTE LA RUTA)
         // =========================================================================
         const welcomeImg = document.querySelector('.onerror-fallback');
         if (welcomeImg) {
