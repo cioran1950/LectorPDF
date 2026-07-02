@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Documentos Digitales</title>
+    <!-- Tailwind CSS para un diseño limpio y rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de la librería PDF.js desde CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        #pdf-render {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans flex flex-col md:flex-row min-h-screen">
+
+    <!-- MENÚ LATERAL DE ACCESOS -->
+    <aside class="w-full md:w-64 bg-gray-800 p-6 flex flex-col gap-6 border-b md:border-b-0 md:border-r border-gray-700">
+        <div>
+            <h2 class="text-xl font-bold text-blue-400 tracking-wide">Panel de Accesos</h2>
+            <p class="text-xs text-gray-400 mt-1">Selecciona un documento para visualizarlo</p>
+        </div>
+        
+        <!-- Botones del Menú (Modifica los 'data-pdf' con las rutas de tus archivos) -->
+        <nav class="flex flex-col gap-3">
+            <button data-pdf="documentos/pruebaLauraZelada.pdf" class="pdf-btn w-full text-left bg-gray-700 hover:bg-blue-600 px-4 py-3 rounded-lg font-medium transition-all duration-200 shadow-md">
+                📋 Libros Laura Zelada
+            </button>
+            <button data-pdf="documentos/catalogo-servicios.pdf" class="pdf-btn w-full text-left bg-gray-700 hover:bg-blue-600 px-4 py-3 rounded-lg font-medium transition-all duration-200 shadow-md">
+                🛠️ Galeria de Arte
+            </button>
+        </nav>
+
+        <!-- CONTROLES DEL VISOR -->
+        <div id="controls" class="hidden mt-auto bg-gray-700 p-4 rounded-xl flex flex-col gap-3">
+            <div class="flex justify-between items-center text-sm">
+                <span>Página: <span id="page-num" class="font-bold text-blue-400">0</span> / <span id="page-count">0</span></span>
+            </div>
+            <div class="flex gap-2">
+                <button id="prev-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">◀ Ant</button>
+                <button id="next-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">Sig ▶</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ÁREA DE VISUALIZACIÓN EN LÍNEA -->
+    <main class="flex-1 p-4 md:p-8 flex flex-col items-center justify-center bg-gray-950 overflow-y-auto">
+        <div id="welcome-message" class="text-center max-w-md p-6">
+            <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <p class="text-lg text-gray-400 font-semibold">Bienvenido al visor interactivo</p>
+            <p class="text-sm text-gray-500 mt-2">Por favor, haz clic en cualquiera de los accesos del menú para cargar el PDF directamente en pantalla.</p>
+        </div>
+
+        <!-- Canvas donde se dibuja el PDF -->
+        <div class="relative w-full max-w-4xl flex justify-center">
+            <canvas id="pdf-render" class="hidden border border-gray-800 rounded-lg bg-white"></canvas>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
