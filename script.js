@@ -1,9 +1,9 @@
 (function() {
-    // Configuración de la ruta del Worker de PDF.js
-    if (typeof pdfjsLib !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-    }
-
+ // Configuración optimizada para entornos estrictos como GitHub Pages
+if (typeof pdfjsLib !== 'undefined') {
+    // Intentar cargar el worker externo
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+}
     let pdfDoc = null,
         pageNum = 1,
         pageIsRendering = false,
