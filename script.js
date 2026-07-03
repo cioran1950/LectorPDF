@@ -216,9 +216,9 @@
         }
 
         // Carga el PDF inicial de manera automática en GitHub Pages
-        const defaultBtn = document.getElementById('btn-default-pdf');
-        if (defaultBtn) {
-            defaultBtn.click();
-        }
+        //const defaultBtn = document.getElementById('btn-default-pdf');
+        //if (defaultBtn) {
+        //    defaultBtn.click();
+       // }
     });
 })();
