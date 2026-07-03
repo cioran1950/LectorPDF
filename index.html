@@ -33,7 +33,7 @@
 <body class="bg-gray-900 text-gray-100 font-sans flex flex-col md:flex-row min-h-screen">
 
     <!-- MENÚ LATERAL DE ACCESOS -->
-    <aside class="w-full md:w-64 bg-gray-800 p-6 flex flex-col gap-6 border-b md:border-b-0 md:border-r border-gray-700">
+    <aside class="w-full md:w-64 bg-gray-800 p-6 flex flex-col gap-6 border-b md:border-b-0 md:border-r border-gray-700 shrink-0">
         <div>
             <h2 class="text-xl font-bold text-blue-400 tracking-wide">Genuino</h2>
             <p class="text-xs text-gray-400 mt-1">Selecciona una categoría y su documento</p>
@@ -64,7 +64,6 @@
                     <button type="button" data-pdf="documentos/lauraZelada-vol2.pdf" data-date="2026-06-15" class="pdf-btn w-full text-left text-sm bg-gray-800 hover:bg-blue-600 px-3 py-2 rounded text-gray-300 hover:text-white transition flex items-center justify-between group">
                         <span>📖 Libro 3</span>
                     </button>
-
                     
                 </div>
             </div>
@@ -91,28 +90,16 @@
             </div>
 
         </nav>
-
-        <!-- CONTROLES DEL VISOR -->
-        <div id="controls" class="hidden mt-auto bg-gray-700 p-4 rounded-xl flex flex-col gap-3">
-            <div class="flex justify-between items-center text-sm">
-                <span>Página: <span id="page-num" class="font-bold text-blue-400">0</span> / <span id="page-count">0</span></span>
-            </div>
-            <div class="flex gap-2">
-                <button type="button" id="prev-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">◀ Ant</button>
-                <button type="button" id="next-page" class="flex-1 bg-gray-600 hover:bg-gray-500 py-1.5 rounded font-bold text-sm transition text-center">Sig ▶</button>
-            </div>
-        </div>
     </aside>
 
     <!-- ÁREA DE VISUALIZACIÓN EN LÍNEA -->
-    <main class="flex-1 p-4 md:p-8 flex flex-col items-center justify-center bg-gray-950 overflow-y-auto relative">
+    <main class="flex-1 p-4 md:p-8 flex flex-col items-center justify-center bg-gray-950 overflow-y-auto relative min-h-screen">
         
         <!-- PANTALLA DE BIENVENIDA / INFORMACIÓN DE LA PÁGINA -->
         <div id="welcome-message" class="w-full max-w-2xl bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-2xl text-center space-y-6">
             
             <!-- CONTENEDOR DE LA IMAGEN DESDE LA RAÍZ DEL PROYECTO -->
             <div class="w-full h-48 md:h-64 rounded-xl overflow-hidden bg-gray-900 border border-gray-700 flex items-center justify-center relative">
-                <!-- Puedes cambiar 'img/portada.jpg' por la ruta de tu archivo de imagen local -->
                 <img src="img/portada.jpg" alt="Presentación Genuino" class="w-full h-full object-cover onerror-fallback">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent"></div>
             </div>
@@ -143,12 +130,36 @@
             <p class="text-xs text-gray-500 italic pt-2">Todos los derechos reservados © Laura Zelada & Cioran Copyright 2026</p>
         </div>
 
-        <!-- Canvas donde se dibuja el PDF -->
-        <div class="relative w-full max-w-4xl flex justify-center my-auto">
-            <canvas id="pdf-render" class="hidden border border-gray-800 rounded-lg bg-white"></canvas>
+        <!-- CONTENEDOR CONTROLES Y LIENZO PDF -->
+        <div id="pdf-container" class="hidden relative w-full max-w-4xl flex flex-col items-center group my-auto">
+            
+            <!-- BOTÓN FLOTANTE: ANTERIOR -->
+            <button type="button" id="prev-page" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-gray-900/80 hover:bg-blue-600 text-white p-3 rounded-full shadow-2xl border border-gray-700 transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 backdrop-blur-sm" title="Página anterior">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <!-- CONTENEDOR DEL CANVAS -->
+            <div class="w-full flex justify-center overflow-hidden rounded-lg shadow-2xl border border-gray-800 bg-white">
+                <canvas id="pdf-render" class="transition-opacity duration-300 ease-in-out opacity-100"></canvas>
+            </div>
+
+            <!-- BOTÓN FLOTANTE: SIGUIENTE -->
+            <button type="button" id="next-page" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-gray-900/80 hover:bg-blue-600 text-white p-3 rounded-full shadow-2xl border border-gray-700 transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 backdrop-blur-sm" title="Siguiente página">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+            <!-- CONTADOR DE PÁGINAS FLOTANTE INFERIOR -->
+            <div id="controls" class="mt-4 bg-gray-800/90 border border-gray-700 px-5 py-2 rounded-full text-xs shadow-xl backdrop-blur-sm">
+                <span>Página: <span id="page-num" class="font-bold text-blue-400">0</span> / <span id="page-count" class="text-gray-400">0</span></span>
+            </div>
         </div>
     </main>
 
+    <!-- Enlace al archivo JavaScript externo -->
     <script src="script.js"></script>
 </body>
 </html>
