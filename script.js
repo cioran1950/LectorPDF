@@ -15,9 +15,11 @@
     window.addEventListener('DOMContentLoaded', () => {
         const canvas = document.getElementById('pdf-render');
         const ctx = canvas ? canvas.getContext('2d') : null;
+        const pdfContainer = document.getElementById('pdf-container');
+        const welcome = document.getElementById('welcome-message');
 
         // =========================================================================
-            // 1. VALIDACIÓN DE IMAGEN DE PORTADA (RESPALDO SI NO EXISTE LA RUTA)
+        // 1. VALIDACIÓN DE IMAGEN DE PORTADA (RESPALDO SI NO EXISTE LA RUTA)
         // =========================================================================
         const welcomeImg = document.querySelector('.onerror-fallback');
         if (welcomeImg) {
@@ -63,39 +65,50 @@
         gestionarNotificacionesNuevas();
 
         // =========================================================================
-        // 3. MOTOR DE RENDERIZADO DE PDF (PDF.JS)
+        // 3. MOTOR DE RENDERIZADO DE PDF CON EFECTO DE TRANSICIÓN (FADE OUT/IN)
         // =========================================================================
         const renderPage = num => {
             pageIsRendering = true;
             document.getElementById('page-num').textContent = num;
 
-            pdfDoc.getPage(num).then(page => {
-                const viewport = page.getViewport({ scale });
-                if (canvas && ctx) {
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
+            // Transición: Cambiamos la opacidad del canvas a 0 para ocultar la página vieja suavemente
+            if (canvas) {
+                canvas.classList.remove('opacity-100');
+                canvas.classList.add('opacity-0');
+            }
 
-                    const renderCtx = {
-                        canvasContext: ctx,
-                        viewport: viewport
-                    };
+            // Pausa de 200ms para esperar que termine la animación de salida antes de dibujar la nueva página
+            setTimeout(() => {
+                pdfDoc.getPage(num).then(page => {
+                    const viewport = page.getViewport({ scale });
+                    if (canvas && ctx) {
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
 
-                    page.render(renderCtx).promise.then(() => {
-                        pageIsRendering = false;
-                        if (pageNumPending !== null) {
-                            renderPage(pageNumPending);
-                            pageNumPending = null;
-                        }
-                    });
-                }
+                        const renderCtx = {
+                            canvasContext: ctx,
+                            viewport: viewport
+                        };
 
-                // Cambios visuales: Mostrar visor e interfaz, ocultar bienvenida informativa
-                if (canvas) canvas.classList.remove('hidden');
-                const controls = document.getElementById('controls');
-                const welcome = document.getElementById('welcome-message');
-                if (controls) controls.classList.remove('hidden');
-                if (welcome) welcome.classList.add('hidden'); 
-            });
+                        page.render(renderCtx).promise.then(() => {
+                            pageIsRendering = false;
+                            
+                            // Animación de entrada: Restauramos la opacidad a 100
+                            canvas.classList.remove('opacity-0');
+                            canvas.classList.add('opacity-100');
+
+                            if (pageNumPending !== null) {
+                                renderPage(pageNumPending);
+                                pageNumPending = null;
+                            }
+                        });
+                    }
+
+                    // Cambios visuales: Muestra el visor y oculta el cuadro informativo estático inicial
+                    if (pdfContainer) pdfContainer.classList.remove('hidden');
+                    if (welcome) welcome.classList.add('hidden'); 
+                });
+            }, 200);
         };
 
         const queueRenderPage = num => {
@@ -180,16 +193,15 @@
             }
         });
 
-        // Controles de cambio de página
+        // Controles de cambio de página vinculados a los botones flotantes del DOM
         const prevBtn = document.getElementById('prev-page');
         const nextBtn = document.getElementById('next-page');
         if (prevBtn) prevBtn.addEventListener('click', showPrevPage);
         if (nextBtn) nextBtn.addEventListener('click', showNextPage);
 
         // =========================================================================
-        // 5. COMPORTAMIENTO INICIAL DEL MENÚ (SIN CARGA FORZADA DE CANVAS)
+        // 5. COMPORTAMIENTO INICIAL DEL MENÚ
         // =========================================================================
-        // Abre visualmente la primera sección al ingresar, manteniendo la pantalla de inicio visible.
         const defaultSubmenu = document.getElementById('submenu-laura');
         if (defaultSubmenu) {
             defaultSubmenu.classList.remove('hidden');
@@ -198,5 +210,3 @@
         }
     });
 })();
-
-
