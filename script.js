@@ -1,9 +1,4 @@
 (function() {
- // Configuración optimizada para entornos estrictos como GitHub Pages
-if (typeof pdfjsLib !== 'undefined') {
-    // Intentar cargar el worker externo
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-}
     let pdfDoc = null,
         pageNum = 1,
         pageIsRendering = false,
@@ -13,6 +8,16 @@ if (typeof pdfjsLib !== 'undefined') {
     const DIAS_NOTIFICACION = 3; // Días que durará el indicador "NUEVO" en los libros
 
     window.addEventListener('DOMContentLoaded', () => {
+        // =========================================================================
+        // 0. CONFIGURACIÓN SEGURA DEL WORKER (OPTIMIZADO PARA PRODUCTION/GITHUB)
+        // =========================================================================
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        } else {
+            console.error("PDF.js no se ha cargado correctamente desde la CDN.");
+            return;
+        }
+
         const canvas = document.getElementById('pdf-render');
         const ctx = canvas ? canvas.getContext('2d') : null;
         const pdfContainer = document.getElementById('pdf-container');
@@ -140,12 +145,12 @@ if (typeof pdfjsLib !== 'undefined') {
                 renderPage(pageNum);
             }).catch(err => {
                 console.error("Error al cargar el PDF: ", err);
-                alert("No se pudo cargar el archivo PDF. Asegúrate de que la ruta sea correcta y exista en el repositorio.");
+                alert("No se pudo cargar el archivo PDF.\n\nVerifica que el nombre del archivo coincida exactamente (mayúsculas y minúsculas) con tu repositorio en GitHub.");
             });
         };
 
         // =========================================================================
-        // 4. INTERFACING / DELEGACIÓN DE EVENTOS GLOBAL (OPTIMIZADO PARA GITHUB)
+        // 4. INTERFACING / DELEGACIÓN DE EVENTOS GLOBAL
         // =========================================================================
         document.addEventListener('click', function (e) {
             
@@ -200,13 +205,19 @@ if (typeof pdfjsLib !== 'undefined') {
         if (nextBtn) nextBtn.addEventListener('click', showNextPage);
 
         // =========================================================================
-        // 5. COMPORTAMIENTO INICIAL DEL MENÚ
+        // 5. COMPORTAMIENTO INICIAL DEL MENÚ Y DISPARO AUTOMÁTICO
         // =========================================================================
         const defaultSubmenu = document.getElementById('submenu-laura');
         if (defaultSubmenu) {
             defaultSubmenu.classList.remove('hidden');
             const targetArrow = defaultSubmenu.parentElement.querySelector('.arrow-icon');
             if (targetArrow) targetArrow.classList.add('rotated');
+        }
+
+        // Carga el PDF inicial de manera automática en GitHub Pages
+        const defaultBtn = document.getElementById('btn-default-pdf');
+        if (defaultBtn) {
+            defaultBtn.click();
         }
     });
 })();
